@@ -1,0 +1,363 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ----------------
+// Enums
+// ----------------
+enum Theme {
+  LIGHT
+  DARK
+}
+
+enum Role {
+  OWNER
+  ADMIN
+  MEMBER
+}
+
+enum DefaultView {
+  BOARD
+  LIST
+  CALENDAR
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+  BLOCKED
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum RecurringType {
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
+}
+
+enum FileType {
+  IMAGE
+  VIDEO
+  DOCUMENT
+  AUDIO
+  OTHER
+}
+
+// ----------------
+// Users & Auth
+// ----------------
+model User {
+  id        String    @id @default(uuid())
+  email     String    @unique
+  password  String
+  name      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  profile       UserProfile?
+  workspaces    WorkspaceMember[]
+  refreshTokens RefreshToken[]
+  activityLogs  ActivityLog[]
+  comments      Comment[]
+  attachments   Attachment[]
+  notifications Notification[]
+  mentions      Mention[]
+}
+
+model UserProfile {
+  id        String    @id @default(uuid())
+  userId    String    @unique
+  avatar    String?
+  theme     Theme     @default(LIGHT)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+// ----------------
+// Workspaces & Permissions
+// ----------------
+model Workspace {
+  id        String    @id @default(uuid())
+  name      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  members  WorkspaceMember[]
+  tasks    Task[]
+  notes    Note[]
+  events   Event[]
+  activity ActivityLog[]
+  tags     Tag[]
+  settings WorkspaceSetting?
+}
+
+model WorkspaceMember {
+  id          String    @id @default(uuid())
+  role        Role      @default(MEMBER)
+  userId      String
+  workspaceId String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  user      User      @relation(fields: [userId], references: [id])
+  workspace Workspace @relation(fields: [workspaceId], references: [id])
+
+  @@unique([userId, workspaceId])
+}
+
+model WorkspaceSetting {
+  id          String      @id @default(uuid())
+  workspaceId String      @unique
+  defaultView DefaultView @default(BOARD)
+  allowGuests Boolean     @default(false)
+  theme       Theme       @default(LIGHT)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  deletedAt   DateTime?
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id])
+}
+
+// ----------------
+// Tasks & Workspace Content
+// ----------------
+model Task {
+  id          String       @id @default(uuid())
+  title       String
+  description String?
+  status      TaskStatus   @default(TODO)
+  priority    TaskPriority @default(MEDIUM)
+  dueDate     DateTime?
+  recurring   Recurring?
+  workspaceId String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  deletedAt   DateTime?
+
+  workspace    Workspace        @relation(fields: [workspaceId], references: [id])
+  comments     Comment[]
+  attachments  Attachment[]
+  subTasks     SubTask[]
+  tags         TaskTag[]
+  dependencies TaskDependency[] @relation("task_dependencies")
+  dependents   TaskDependency[] @relation("task_dependencies_dep")
+}
+
+model SubTask {
+  id        String    @id @default(uuid())
+  title     String
+  completed Boolean   @default(false)
+  taskId    String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  task Task @relation(fields: [taskId], references: [id])
+}
+
+model Recurring {
+  id        String        @id @default(uuid())
+  type      RecurringType
+  interval  Int           @default(1)
+  endDate   DateTime?
+  taskId    String?       @unique
+  eventId   String?       @unique
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  deletedAt DateTime?
+
+  task       Task?                @relation(fields: [taskId], references: [id])
+  event      Event?               @relation(fields: [eventId], references: [id])
+  exceptions RecurringException[]
+}
+
+model RecurringException {
+  id          String    @id @default(uuid())
+  recurringId String
+  date        DateTime
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  recurring Recurring @relation(fields: [recurringId], references: [id])
+}
+
+model TaskDependency {
+  id        String    @id @default(uuid())
+  taskId    String
+  dependsOn String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  task       Task @relation("task_dependencies", fields: [taskId], references: [id])
+  dependency Task @relation("task_dependencies_dep", fields: [dependsOn], references: [id])
+}
+
+model Note {
+  id          String    @id @default(uuid())
+  title       String
+  content     String
+  workspaceId String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  workspace   Workspace    @relation(fields: [workspaceId], references: [id])
+  comments    Comment[]
+  attachments Attachment[]
+}
+
+model Event {
+  id          String     @id @default(uuid())
+  title       String
+  date        DateTime
+  recurring   Recurring?
+  workspaceId String
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  deletedAt   DateTime?
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id])
+}
+
+// ----------------
+// Authentication / JWT
+// ----------------
+model RefreshToken {
+  id        String    @id @default(uuid())
+  token     String    @unique
+  userId    String
+  createdAt DateTime  @default(now())
+  expiresAt DateTime
+  revoked   Boolean   @default(false)
+  deletedAt DateTime?
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+// ----------------
+// Activity / Audit
+// ----------------
+model ActivityLog {
+  id          String    @id @default(uuid())
+  userId      String
+  workspaceId String
+  action      String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  user      User      @relation(fields: [userId], references: [id])
+  workspace Workspace @relation(fields: [workspaceId], references: [id])
+}
+
+// ----------------
+// Comments, Mentions & Attachments
+// ----------------
+model Comment {
+  id        String    @id @default(uuid())
+  content   String
+  authorId  String
+  taskId    String?
+  noteId    String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  author   User      @relation(fields: [authorId], references: [id])
+  task     Task?     @relation(fields: [taskId], references: [id])
+  note     Note?     @relation(fields: [noteId], references: [id])
+  mentions Mention[]
+}
+
+model Mention {
+  id        String    @id @default(uuid())
+  userId    String
+  commentId String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  user    User     @relation(fields: [userId], references: [id])
+  comment Comment? @relation(fields: [commentId], references: [id])
+}
+
+model Attachment {
+  id         String    @id @default(uuid())
+  filename   String
+  filetype   FileType?
+  url        String
+  uploadedBy String
+  taskId     String?
+  noteId     String?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  deletedAt  DateTime?
+
+  user User  @relation(fields: [uploadedBy], references: [id])
+  task Task? @relation(fields: [taskId], references: [id])
+  note Note? @relation(fields: [noteId], references: [id])
+}
+
+// ----------------
+// Notifications / Audit
+// ----------------
+model Notification {
+  id          String    @id @default(uuid())
+  userId      String
+  message     String
+  read        Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deliveredAt DateTime?
+  deletedAt   DateTime?
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+// ----------------
+// Tags / Labels
+// ----------------
+model Tag {
+  id          String    @id @default(uuid())
+  name        String
+  color       String?
+  workspaceId String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id])
+  tasks     TaskTag[]
+}
+
+model TaskTag {
+  taskId String
+  tagId  String
+
+  task Task @relation(fields: [taskId], references: [id])
+  tag  Tag  @relation(fields: [tagId], references: [id])
+
+  @@id([taskId, tagId])
+}
