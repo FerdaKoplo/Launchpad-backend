@@ -13,7 +13,6 @@ async function bootstrap() {
     }),
   )
 
-
   const config = new DocumentBuilder()
     .setTitle('Launchpad API')
     .setDescription('API documentation for Launchpad')
