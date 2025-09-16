@@ -337,7 +337,7 @@ model Notification {
 }
 
 // ----------------
-// Tags / Labels
+// Tags 
 // ----------------
 model Tag {
   id          String    @id @default(uuid())
