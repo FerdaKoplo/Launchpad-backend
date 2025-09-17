@@ -8,4 +8,4 @@ import { WorkspaceController } from "./workspace.controller";
   exports: [WorkspaceService]
 
 })
-export class UserModule { }
+export class WorkspaceModule { }
