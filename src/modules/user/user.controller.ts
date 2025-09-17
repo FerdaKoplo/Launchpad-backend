@@ -1,5 +1,5 @@
 import { UserPayload } from './../../types/user.type';
-import { Body, Controller, Get, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Post, Put } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { CurrentUser } from "../auth/decorators/current-user.decorator";
 import { CreateUserProfileDTO } from './dto/create-user-profile.dto';
@@ -24,10 +24,15 @@ export class UserController {
 
     @Put('profile')
     async updateProfile(
-        @CurrentUser() currentUser : UserPayload,
-        @Body() updateUserProfile : UpdateUserProfileDTO) {
-        
+        @CurrentUser() currentUser: UserPayload,
+        @Body() updateUserProfile: UpdateUserProfileDTO) {
+
         return this.userService.updateProfile(currentUser.id, updateUserProfile)
     }
 
+    @Delete('profile')
+    async deleteProfile(
+        @CurrentUser() currentUser: UserPayload) {
+        return this.userService.deleteProfile(currentUser.id)
+    }
 }
