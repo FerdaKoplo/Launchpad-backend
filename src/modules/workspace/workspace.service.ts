@@ -40,7 +40,7 @@ export class WorkspaceService {
     }
 
     async getDetailWorkspace(id: string): Promise<WorkspaceDTO> {
-        return this.prisma.workspace.findUniqueOrThrow({
+        return await this.prisma.workspace.findUniqueOrThrow({
             where: { id },
             include: {
                 members: true,
@@ -56,7 +56,7 @@ export class WorkspaceService {
 
 
     async createWorkspace(createWorkspace: CreateWorkspaceDTO): Promise<WorkspaceDTO> {
-        return this.prisma.workspace.create({
+        return await this.prisma.workspace.create({
             data: {
                 name: createWorkspace.name,
                 deletedAt: createWorkspace.deletedAt ?? null,
@@ -74,7 +74,7 @@ export class WorkspaceService {
     }
 
     async updateWorkspace(id: string, updateWorkspace: UpdateWorkspaceDTO): Promise<WorkspaceDTO> {
-        return this.prisma.workspace.update({
+        return await this.prisma.workspace.update({
             where: { id },
             data: {
                 ...(updateWorkspace.name !== undefined && { name: updateWorkspace.name }),
