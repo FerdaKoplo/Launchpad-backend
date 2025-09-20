@@ -12,7 +12,7 @@ export class TaskService {
     async getTasks(
         workspaceId?: string
     ): Promise<TaskDTO[]> {
-        return this.prisma.task.findMany({
+        const tasks = await this.prisma.task.findMany({
             where: {
                 deletedAt: null,
                 ...(workspaceId && { workspaceId }),
@@ -22,12 +22,26 @@ export class TaskService {
                 comments: true,
                 attachments: true,
                 subTasks: true,
-                tags: true,
+                tags: {
+                    include: {
+                        tag: true
+                    }
+                },
                 dependencies: true,
                 dependents: true,
                 recurring: true,
             },
         })
+
+
+        return tasks.map(task => ({
+            ...task,
+            tags: task.tags.map(t => ({
+                id: t.tag.id,
+                name: t.tag.name,
+                color: t.tag.color,
+            }))
+        }))
     }
 
     async getDetailTask(

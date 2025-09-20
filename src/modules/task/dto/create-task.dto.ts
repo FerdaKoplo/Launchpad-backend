@@ -9,7 +9,7 @@ export class CreateTaskDTO {
     @IsString()
     @IsOptional()
     description?: string
-
+    
     @IsEnum(TaskStatus)
     @IsOptional()
     status?: TaskStatus = TaskStatus.TODO

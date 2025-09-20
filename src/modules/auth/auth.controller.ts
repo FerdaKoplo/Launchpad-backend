@@ -1,8 +1,8 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from "@nestjs/common";
 import { AuthService } from "./auth.service";
-import { RegisterDTO } from "../dto/auth/register.dto";
-import { LoginDTO } from "../dto/auth/login.dto";
-import { RefreshTokenDTO } from "../dto/auth/refresh.dto";
+import { RegisterDTO } from "./dto/auth/register.dto";
+import { LoginDTO } from "./dto/auth/login.dto";
+import { RefreshTokenDTO } from "./dto/auth/refresh.dto";
 import { ApiTags } from "@nestjs/swagger";
 
 @ApiTags('auth')
@@ -21,7 +21,6 @@ export class AuthController {
     async login(@Body() body: LoginDTO) {
         const { email, password } = body
         return this.authService.login(email, password)
-
     }
 
     @Post('refresh')
