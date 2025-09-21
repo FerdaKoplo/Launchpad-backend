@@ -8,7 +8,7 @@ import { UpdateSubTaskDTO } from "./dto/update-sub-tasl.dto";
 export class SubTaskService {
     constructor(private readonly prisma: PrismaService) { }
 
-    async getSubTasksbyTask(
+    async getSubTasks(
         taskId: string
     ): Promise<SubTaskDTO[]> {
         return await this.prisma.subTask.findMany({
@@ -23,7 +23,7 @@ export class SubTaskService {
         })
     }
 
-    async getDetailSubTaskbyTask(
+    async getDetailSubTask(
         taskId: string,
         id: string
     ): Promise<SubTaskDTO> {
@@ -101,8 +101,12 @@ export class SubTaskService {
         }
 
         await this.prisma.subTask.update({
-            where: { id },
-            data: { deletedAt: new Date() },
+            where: {
+                id
+            },
+            data: {
+                deletedAt: new Date()
+            },
         })
     }
 }
