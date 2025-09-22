@@ -6,11 +6,13 @@ import { WorkspaceModule } from './modules/workspace/workspace.module';
 import { WorkspaceSettingModule } from './modules/workspace-setting/workspace-setting.module';
 import { WorkspaceMemberModule } from './modules/workspace-member/workspace-member.module';
 import { TaskModule } from './modules/task/task.module';
+import { SubTaskModule } from './modules/sub-task/sub-task.module';
+import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
-  imports: [AuthModule, UserModule,
+  imports: [PrismaModule, AuthModule, UserModule,
     WorkspaceModule, WorkspaceSettingModule,
-    WorkspaceMemberModule, TaskModule],
+    WorkspaceMemberModule, TaskModule, SubTaskModule],
   providers: [PrismaService],
 })
 export class AppModule { }

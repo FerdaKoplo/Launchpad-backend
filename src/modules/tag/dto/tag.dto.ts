@@ -1,3 +1,4 @@
+
 export class TagDTO {
     id: string
     name: string
@@ -6,4 +7,5 @@ export class TagDTO {
     createdAt: Date
     updatedAt: Date
     deletedAt?: Date | null
+
 }

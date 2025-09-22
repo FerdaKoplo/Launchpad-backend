@@ -30,6 +30,9 @@ export class TagService {
                 color: createTagDTO.color,
                 workspaceId: createTagDTO.workspaceId,
             },
+            include : {
+                workspace : true
+            }
         })
     }
 
@@ -52,6 +55,9 @@ export class TagService {
                 ...(updateTagDTO.color !== undefined && { color: updateTagDTO.color }),
                 ...(updateTagDTO.workspaceId !== undefined && { workspaceId: updateTagDTO.workspaceId }),
             },
+            include : {
+                workspace : true
+            }
         })
 
     }
@@ -73,6 +79,9 @@ export class TagService {
             data: {
                 deletedAt: new Date()
             },
+            include : {
+                workspace : true
+            }
         })
 
     }
@@ -87,7 +96,11 @@ export class TagService {
                 ...(filters.color && { color: filters.color }),
                 ...(filters.workspaceId && { workspaceId: filters.workspaceId }),
             },
-        })
 
+            include : {
+                workspace : true,
+                tasks : true
+            }
+        })
     }
 }
