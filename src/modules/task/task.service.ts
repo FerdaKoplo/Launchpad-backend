@@ -72,7 +72,7 @@ export class TaskService {
         createTaskDTO: CreateTaskDTO
 
     ): Promise<TaskDTO> {
-        return this.prisma.task.create({
+        return await this.prisma.task.create({
             data: {
                 title: createTaskDTO.title,
                 description: createTaskDTO.description,
@@ -98,7 +98,7 @@ export class TaskService {
         id: string,
         updateTaskDTO: UpdateTaskDTO
     ): Promise<TaskDTO> {
-        return this.prisma.task.update({
+        return await this.prisma.task.update({
             where: { id },
             data: {
                 ...(updateTaskDTO.title !== undefined && { title: updateTaskDTO.title }),
@@ -124,7 +124,7 @@ export class TaskService {
     async deleteTask(
         id: string
     ): Promise<TaskDTO> {
-        return this.prisma.task.update({
+        return await this.prisma.task.update({
             where: { id },
             data: {
                 deletedAt: new Date(),
@@ -133,7 +133,7 @@ export class TaskService {
     }
 
     async filterTask(filters: TaskFilterDTO): Promise<TaskDTO[]> {
-        return this.prisma.task.findMany({
+        return await this.prisma.task.findMany({
             where: {
                 deletedAt: null,
                 ...(filters.title && {
