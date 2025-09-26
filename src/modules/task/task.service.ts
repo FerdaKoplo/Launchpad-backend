@@ -48,7 +48,9 @@ export class TaskService {
         id: string
     ): Promise<TaskDTO> {
         const task = await this.prisma.task.findUnique({
-            where: { id },
+            where: {
+                id
+            },
             include: {
                 workspace: true,
                 comments: true,

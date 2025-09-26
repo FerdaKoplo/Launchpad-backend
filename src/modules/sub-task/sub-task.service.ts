@@ -54,7 +54,7 @@ export class SubTaskService {
             data: {
                 title: createSubTaskDTO.title,
                 completed: createSubTaskDTO.completed ?? false,
-                taskId
+                taskId 
             },
             include: {
                 task: true,

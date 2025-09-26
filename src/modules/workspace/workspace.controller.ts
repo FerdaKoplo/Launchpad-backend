@@ -8,17 +8,17 @@ import { WorkspaceFilterDTO } from "./dto/workspace-filter.dto";
 export class WorkspaceController {
     constructor(private readonly workspaceService: WorkspaceService) { }
 
-    @Get('workspaces')
+    @Get()
     async getAllWorkspaces() {
         return this.workspaceService.getWorkspaces()
     }
 
-    @Get('id')
+    @Get(':id')
     async getDetailWorkspace(@Param('id') id: string) {
         return this.workspaceService.getDetailWorkspace(id)
     }
 
-    @Post('workspace')
+    @Post()
     async createWorkspace(
         @Body() createWorkspace: CreateWorkspaceDTO) {
         return this.workspaceService.createWorkspace(createWorkspace)

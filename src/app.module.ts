@@ -9,13 +9,15 @@ import { TaskModule } from './modules/task/task.module';
 import { SubTaskModule } from './modules/sub-task/sub-task.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { TagModule } from './modules/tag/tag.module';
+import { TaskDependencyModule } from './modules/task-dependency/task-dependency.module';
+import { RecurringModule } from './modules/recurring/recurring.module';
 
 @Module({
   imports: [
     PrismaModule, AuthModule,
     UserModule, WorkspaceModule, WorkspaceSettingModule,
     WorkspaceMemberModule, TaskModule, SubTaskModule,
-    TagModule
+    TagModule, TaskDependencyModule, RecurringModule
   ],
   providers: [PrismaService],
 })

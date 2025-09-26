@@ -3,6 +3,7 @@ import { PrismaService } from "src/prisma/prisma.service";
 import { TaskDependencyDTO } from "./dto/task-dependency.dto";
 import { CreateTaskDependencyDTO } from "./dto/create-task-dependency.dto";
 import { UpdateTaskDependencyDTO } from "./dto/update-task-dependency.dto";
+import { FilterTaskDependencyDTO } from "./dto/filter-task-dependency.dto";
 
 @Injectable()
 export class TaskDependencyService {
@@ -19,6 +20,7 @@ export class TaskDependencyService {
 
             include: {
                 task: true,
+                dependency: true
             }
         })
     }
@@ -27,13 +29,14 @@ export class TaskDependencyService {
         id: string,
         taskId: string
     ): Promise<TaskDependencyDTO> {
-        const taskDependency = await this.prisma.taskDependency.findUnique({
+        const taskDependency = await this.prisma.taskDependency.findFirst({
             where: {
                 id,
                 taskId
             },
 
             include: {
+                dependency: true,
                 task: true
             }
         })
@@ -45,14 +48,16 @@ export class TaskDependencyService {
     }
 
     async createTaskDependency(
+        taskId : string,
         createTaskDependencyDTO: CreateTaskDependencyDTO
     ): Promise<TaskDependencyDTO> {
         return await this.prisma.taskDependency.create({
             data: {
-                taskId: createTaskDependencyDTO.taskId,
+                taskId,
                 dependsOn: createTaskDependencyDTO.dependsOn
             },
             include: {
+                dependency: true,
                 task: true
             }
         })
@@ -60,27 +65,49 @@ export class TaskDependencyService {
 
     async updateTaskDependency(
         id: string,
+        taskId : string,
         updateTaskDependency: UpdateTaskDependencyDTO
     ) {
         return await this.prisma.taskDependency.update({
             where: { id },
             data: {
                 ...(updateTaskDependency.dependsOn !== undefined && { dependsOn: updateTaskDependency.dependsOn }),
-                ...(updateTaskDependency.taskId !== undefined && { taskId: updateTaskDependency.taskId }),
             },
             include: {
+                dependency: true,
                 task: true
             }
         })
     }
 
     async deleteTaskDependency(
-        id : string
-    ) : Promise<TaskDependencyDTO> {
+        id: string
+    ): Promise<TaskDependencyDTO> {
         return await this.prisma.taskDependency.update({
-            where : { id },
-            data : {
-                deletedAt : new Date()      
+            where: { id },
+            data: {
+                deletedAt: new Date()
+            }
+        })
+    }
+
+    async filterTaskDependency(
+        filters: FilterTaskDependencyDTO
+    ): Promise<TaskDependencyDTO[]> {
+        return await this.prisma.taskDependency.findMany({
+            where: {
+                deletedAt: null,
+                ...(filters.taskId && { taskId: filters.taskId }),
+                ...(filters.dependsOn && { dependsOn: filters.dependsOn }),
+                
+                // check parents task workspace
+                ...(filters.workspaceId && {
+                    task: { workspaceId: filters.workspaceId }
+                })
+            },
+            include : {
+                task : true,
+                dependency : true
             }
         })
     }

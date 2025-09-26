@@ -16,6 +16,4 @@ export class CreateCommentDTO {
     @IsString()
     @IsOptional()
     content: string
-
-
 }
