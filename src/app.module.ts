@@ -12,13 +12,15 @@ import { TagModule } from './modules/tag/tag.module';
 import { TaskDependencyModule } from './modules/task-dependency/task-dependency.module';
 import { RecurringModule } from './modules/recurring/recurring.module';
 import { NoteModule } from './modules/note/note.module';
+import { ActivityLogModule } from './modules/activity-log/activity-log.module';
 
 @Module({
   imports: [
     PrismaModule, AuthModule,
     UserModule, WorkspaceModule, WorkspaceSettingModule,
     WorkspaceMemberModule, TaskModule, SubTaskModule,
-    TagModule, TaskDependencyModule, RecurringModule, NoteModule
+    TagModule, TaskDependencyModule, RecurringModule, NoteModule,
+    ActivityLogModule
   ],
   providers: [PrismaService],
 })

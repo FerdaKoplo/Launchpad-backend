@@ -3,18 +3,20 @@ import { RecurringType } from "prisma/generated/prisma";
 
 export class FilterEventDTO {
 
-    @IsOptional()
-    @IsString()
+  @IsOptional()
+  @IsString()
+  workspaceId: string
 
-    @IsOptional()
-    @IsDateString()
-    startDate?: string
 
-    @IsOptional()
-    @IsDateString()
-    endDate?: string
+  @IsOptional()
+  @IsDateString()
+  startDate?: string
 
-    @IsOptional()
-    @IsEnum(RecurringType)
-    type?: RecurringType
+  @IsOptional()
+  @IsDateString()
+  endDate?: string
+
+  @IsOptional()
+  @IsEnum(RecurringType)
+  type?: RecurringType
 }

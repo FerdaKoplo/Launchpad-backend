@@ -13,3 +13,5 @@ export class CreateNoteDTO {
   @IsNotEmpty()
   workspaceId: string
 }
+
+
