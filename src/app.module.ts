@@ -14,6 +14,10 @@ import { RecurringModule } from './modules/recurring/recurring.module';
 import { NoteModule } from './modules/note/note.module';
 import { ActivityLogModule } from './modules/activity-log/activity-log.module';
 import { NotificationModule } from './modules/notification/notification.module';
+import { CommentModule } from './modules/comment/comment.module';
+import { EventModule } from './modules/event/event.module';
+import { RecurringExceptionModule } from './modules/recurring-exception/recurring-exception.module';
+import { AttachmentModule } from './modules/attachment/attachment.module';
 
 @Module({
   imports: [
@@ -21,7 +25,9 @@ import { NotificationModule } from './modules/notification/notification.module';
     UserModule, WorkspaceModule, WorkspaceSettingModule,
     WorkspaceMemberModule, TaskModule, SubTaskModule,
     TagModule, TaskDependencyModule, RecurringModule, NoteModule,
-    ActivityLogModule, NotificationModule
+    ActivityLogModule, NotificationModule, CommentModule, EventModule,
+    RecurringExceptionModule, AttachmentModule
+
   ],
   providers: [PrismaService],
 })
