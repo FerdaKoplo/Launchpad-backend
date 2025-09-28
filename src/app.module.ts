@@ -13,6 +13,7 @@ import { TaskDependencyModule } from './modules/task-dependency/task-dependency.
 import { RecurringModule } from './modules/recurring/recurring.module';
 import { NoteModule } from './modules/note/note.module';
 import { ActivityLogModule } from './modules/activity-log/activity-log.module';
+import { NotificationModule } from './modules/notification/notification.module';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { ActivityLogModule } from './modules/activity-log/activity-log.module';
     UserModule, WorkspaceModule, WorkspaceSettingModule,
     WorkspaceMemberModule, TaskModule, SubTaskModule,
     TagModule, TaskDependencyModule, RecurringModule, NoteModule,
-    ActivityLogModule
+    ActivityLogModule, NotificationModule
   ],
   providers: [PrismaService],
 })

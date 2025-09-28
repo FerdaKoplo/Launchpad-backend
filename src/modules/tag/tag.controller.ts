@@ -7,41 +7,41 @@ import { TagFilterDTO } from "./dto/tag-filter.dto";
 
 @Controller('tag')
 export class TagController {
-    constructor(private readonly tagService: TagService) { }
+  constructor(private readonly tagService: TagService) { }
 
-    @Get(':workspaceId')
-    async getTagsByWorkspace(
-        @Param('workspaceId') workspaceId: string
-    ): Promise<TagDTO[]> {
-        return this.tagService.getTagsByWorkspace(workspaceId)
-    }
+  @Get()
+  async getTagsByWorkspace(
+    @Param('workspaceId') workspaceId: string
+  ): Promise<TagDTO[]> {
+    return this.tagService.getTagsByWorkspace(workspaceId)
+  }
 
-    @Post()
-    async createTagWorkspace(
-        @Body() createTagDTO: CreateTagDTO
-    ): Promise<TagDTO> {
-        return this.tagService.createTag(createTagDTO)
-    }
+  @Post()
+  async createTagWorkspace(
+    @Body() createTagDTO: CreateTagDTO
+  ): Promise<TagDTO> {
+    return this.tagService.createTag(createTagDTO)
+  }
 
-    @Put(':id')
-    async updateTagWorkspace(
-        @Param('id') id: string,
-        @Body() updateTagDTO: UpdateTagDTO
-    ): Promise<TagDTO> {
-        return this.tagService.updateTag(id, updateTagDTO)
-    }
+  @Put(':id')
+  async updateTagWorkspace(
+    @Param('id') id: string,
+    @Body() updateTagDTO: UpdateTagDTO
+  ): Promise<TagDTO> {
+    return this.tagService.updateTag(id, updateTagDTO)
+  }
 
-    @Delete(':id')
-    async deleteTagWorkspace(
-        @Param('id') id: string
-    ): Promise<TagDTO> {
-        return this.tagService.deleteTag(id)
-    }
+  @Delete(':id')
+  async deleteTagWorkspace(
+    @Param('id') id: string
+  ): Promise<TagDTO> {
+    return this.tagService.deleteTag(id)
+  }
 
-    @Get("filter")
-    async filterTags(
-        @Query() filters: TagFilterDTO
-    ): Promise<TagDTO[]> {
-        return this.tagService.filterTag(filters);
-    }
+  @Get("filter")
+  async filterTags(
+    @Query() filters: TagFilterDTO
+  ): Promise<TagDTO[]> {
+    return this.tagService.filterTag(filters);
+  }
 }

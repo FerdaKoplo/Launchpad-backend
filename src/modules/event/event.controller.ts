@@ -7,48 +7,48 @@ import { FilterEventDTO } from "./dto/filter-event.dto";
 
 @Controller('event')
 export class EventController {
-    constructor (private readonly eventService : EventService) {}
+  constructor(private readonly eventService: EventService) { }
 
-    @Get()
-    async getEventsFromWorkspace(
-        @Param('workspaceId') workspaceId : string
-    ) : Promise<EventDTO[]> {
-        return this.eventService.getEvents(workspaceId)
-    }
+  @Get()
+  async getEventsFromWorkspace(
+    @Query('workspaceId') workspaceId: string
+  ): Promise<EventDTO[]> {
+    return this.eventService.getEvents(workspaceId)
+  }
 
-    @Get(':id')
-    async getDetailEvent(
-        @Param('id') id : string
-    ) : Promise<EventDTO> { 
-        return this.eventService.getDetailEvent(id)
-    }
+  @Get(':id')
+  async getDetailEvent(
+    @Param('id') id: string
+  ): Promise<EventDTO> {
+    return this.eventService.getDetailEvent(id)
+  }
 
-    @Post()
-    async createEvent(
-        @Body() createEventDTO : CreateEventDTO
-    ) : Promise<EventDTO> {
-        return this.eventService.createEvent(createEventDTO)
-    }
-    
-    @Patch(':id')
-    async UpdateEvent(
-        @Param('id') id : string,
-        @Body() updateEventDto : UpdateEventDTO
-    ) : Promise<EventDTO> {
-        return this.eventService.updateEvent(id, updateEventDto)
-    }
+  @Post()
+  async createEvent(
+    @Body() createEventDTO: CreateEventDTO
+  ): Promise<EventDTO> {
+    return this.eventService.createEvent(createEventDTO)
+  }
 
-    @Delete(':id')
-    async deleteEvent(
-        @Param('id') id : string,
-    ) : Promise<EventDTO> {
-        return this.eventService.deleteEvent(id)
-    }
+  @Patch(':id')
+  async UpdateEvent(
+    @Param('id') id: string,
+    @Body() updateEventDto: UpdateEventDTO
+  ): Promise<EventDTO> {
+    return this.eventService.updateEvent(id, updateEventDto)
+  }
 
-    @Get('filter')
-    async filterEvent(
-        @Query() filters : FilterEventDTO
-    ) : Promise<EventDTO[]> {
-        return this.eventService.eventFilter(filters)
-    }
+  @Delete(':id')
+  async deleteEvent(
+    @Param('id') id: string,
+  ): Promise<EventDTO> {
+    return this.eventService.deleteEvent(id)
+  }
+
+  @Get('filter')
+  async filterEvent(
+    @Query() filters: FilterEventDTO
+  ): Promise<EventDTO[]> {
+    return this.eventService.eventFilter(filters)
+  }
 }

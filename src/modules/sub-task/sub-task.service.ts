@@ -6,107 +6,107 @@ import { UpdateSubTaskDTO } from "./dto/update-sub-tasl.dto";
 
 @Injectable()
 export class SubTaskService {
-    constructor(private readonly prisma: PrismaService) { }
+  constructor(private readonly prisma: PrismaService) { }
 
-    async getSubTasks(
-        taskId: string
-    ): Promise<SubTaskDTO[]> {
-        return await this.prisma.subTask.findMany({
-            where: {
-                deletedAt: null,
-                ...(taskId && { taskId })
-            },
+  async getSubTasks(
+    taskId: string
+  ): Promise<SubTaskDTO[]> {
+    return await this.prisma.subTask.findMany({
+      where: {
+        deletedAt: null,
+        ...(taskId && { taskId })
+      },
 
-            include: {
-                task: true
-            }
-        })
+      include: {
+        task: true
+      }
+    })
+  }
+
+  async getDetailSubTask(
+    taskId: string,
+    id: string
+  ): Promise<SubTaskDTO> {
+    const subTask = await this.prisma.subTask.findFirst({
+      where: {
+        taskId,
+        id,
+        deletedAt: null,
+      },
+
+      include: {
+        task: true
+      }
+    })
+
+    if (!subTask || subTask.deletedAt) {
+      throw new NotFoundException("Sub Task not found");
     }
 
-    async getDetailSubTask(
-        taskId: string,
-        id: string
-    ): Promise<SubTaskDTO> {
-        const subTask = await this.prisma.subTask.findFirst({
-            where: {
-                taskId,
-                id,
-                deletedAt: null,
-            },
+    return subTask
+  }
 
-            include: {
-                task: true
-            }
-        })
+  async createSubTaskbyTask(
+    taskId: string,
+    createSubTaskDTO: CreateSubTaskDTO
+  ): Promise<SubTaskDTO> {
+    return await this.prisma.subTask.create({
+      data: {
+        title: createSubTaskDTO.title,
+        completed: createSubTaskDTO.completed ?? false,
+        taskId
+      },
+      include: {
+        task: true,
+      }
+    })
+  }
 
-        if (!subTask || subTask.deletedAt) {
-            throw new NotFoundException("Sub Task not found");
-        }
+  async updateSubTaskByTask(taskId: string, id: string, dto: UpdateSubTaskDTO): Promise<SubTaskDTO> {
+    const subTask = await this.prisma.subTask.findFirst({
+      where: {
+        id,
+        taskId,
+        deletedAt: null
+      },
+    })
 
-        return subTask
+    if (!subTask) {
+      throw new NotFoundException("Sub Task not found");
     }
 
-    async createSubTaskbyTask(
-        taskId: string,
-        createSubTaskDTO: CreateSubTaskDTO
-    ): Promise<SubTaskDTO> {
-        return await this.prisma.subTask.create({
-            data: {
-                title: createSubTaskDTO.title,
-                completed: createSubTaskDTO.completed ?? false,
-                taskId 
-            },
-            include: {
-                task: true,
-            }
-        })
+    return await this.prisma.subTask.update({
+      where: { id },
+      data: {
+        title: dto.title ?? subTask.title,
+        completed: dto.completed ?? subTask.completed,
+      },
+      include: {
+        task: true,
+      },
+    })
+  }
+
+  async deleteSubTaskByTask(taskId: string, id: string): Promise<void> {
+    const subTask = await this.prisma.subTask.findFirst({
+      where: {
+        id,
+        taskId,
+        deletedAt: null
+      },
+    })
+
+    if (!subTask) {
+      throw new NotFoundException("Sub Task not found");
     }
 
-    async updateSubTaskByTask(taskId: string, id: string, dto: UpdateSubTaskDTO): Promise<SubTaskDTO> {
-        const subTask = await this.prisma.subTask.findFirst({
-            where: {
-                id,
-                taskId,
-                deletedAt: null
-            },
-        })
-
-        if (!subTask) {
-            throw new NotFoundException("Sub Task not found");
-        }
-
-        return await this.prisma.subTask.update({
-            where: { id },
-            data: {
-                title: dto.title ?? subTask.title,
-                completed: dto.completed ?? subTask.completed,
-            },
-            include: {
-                task: true,
-            },
-        })
-    }
-
-    async deleteSubTaskByTask(taskId: string, id: string): Promise<void> {
-        const subTask = await this.prisma.subTask.findFirst({
-            where: {
-                id,
-                taskId,
-                deletedAt: null
-            },
-        })
-
-        if (!subTask) {
-            throw new NotFoundException("Sub Task not found");
-        }
-
-        await this.prisma.subTask.update({
-            where: {
-                id
-            },
-            data: {
-                deletedAt: new Date()
-            },
-        })
-    }
+    await this.prisma.subTask.update({
+      where: {
+        id
+      },
+      data: {
+        deletedAt: new Date()
+      },
+    })
+  }
 }

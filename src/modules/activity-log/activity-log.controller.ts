@@ -10,8 +10,8 @@ export class ActivityLogController {
 
   @Get()
   async getActivityLogsUSer(
-    @Param('userId') userId: string,
-    @Param('workspaceId') workspaceId: string
+    @Query('userId') userId: string,
+    @Query('workspaceId') workspaceId: string
   ): Promise<ActivityLogDTO[]> {
     return this.activityLogService.getActivityLogs(userId, workspaceId)
   }

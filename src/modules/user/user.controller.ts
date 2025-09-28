@@ -7,32 +7,32 @@ import { UpdateUserProfileDTO } from './dto/update-user-profile.dto';
 
 @Controller('user')
 export class UserController {
-    constructor(private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) { }
 
-    @Post('profile')
-    async createProfile(
-        @CurrentUser() currentUser: UserPayload,
-        @Body() createUserProfile: CreateUserProfileDTO) {
-        return this.userService.createProfile(currentUser.id, createUserProfile)
-    }
+  @Post()
+  async createProfile(
+    @CurrentUser() currentUser: UserPayload,
+    @Body() createUserProfile: CreateUserProfileDTO) {
+    return this.userService.createProfile(currentUser.id, createUserProfile)
+  }
 
-    @Get('profile')
-    async getUserProfile(
-        currentUser: UserPayload) {
-        return this.userService.getProfileUser(currentUser.id)
-    }
+  @Get()
+  async getUserProfile(
+    currentUser: UserPayload) {
+    return this.userService.getProfileUser(currentUser.id)
+  }
 
-    @Put('profile')
-    async updateProfile(
-        @CurrentUser() currentUser: UserPayload,
-        @Body() updateUserProfile: UpdateUserProfileDTO) {
+  @Put()
+  async updateProfile(
+    @CurrentUser() currentUser: UserPayload,
+    @Body() updateUserProfile: UpdateUserProfileDTO) {
 
-        return this.userService.updateProfile(currentUser.id, updateUserProfile)
-    }
+    return this.userService.updateProfile(currentUser.id, updateUserProfile)
+  }
 
-    @Delete('profile')
-    async deleteProfile(
-        @CurrentUser() currentUser: UserPayload) {
-        return this.userService.deleteProfile(currentUser.id)
-    }
+  @Delete()
+  async deleteProfile(
+    @CurrentUser() currentUser: UserPayload) {
+    return this.userService.deleteProfile(currentUser.id)
+  }
 }
