@@ -18,7 +18,6 @@ enum Theme {
 
 enum Role {
   OWNER
-  ADMIN
   MEMBER
 }
 

@@ -7,7 +7,7 @@ import { UserPayload } from "src/types/user.type";
 import { FilterAttachmentDTO } from "./dto/filter-attachment.dto";
 import { FileInterceptor } from "@nestjs/platform-express";
 
-@Controller()
+@Controller('attachment')
 export class AttachmentController {
   constructor(private readonly attachmentService: AttachmentService) { }
   @Get()

@@ -3,29 +3,29 @@ import { TokenPayload, verifyToken } from "src/utils/jwt";
 
 
 interface AuthRequest extends Request {
-    user?: TokenPayload
+  user?: TokenPayload
 }
 
 @Injectable()
 export class JWtAuthGuard implements CanActivate {
-    canActivate(context: ExecutionContext): boolean {
-        const request = context.switchToHttp().getRequest<AuthRequest>()
-        const authHeader = request.headers['authorization']
+  canActivate(context: ExecutionContext): boolean {
+    const request = context.switchToHttp().getRequest<AuthRequest>()
+    const authHeader = request.headers['authorization']
 
-        if (!authHeader)
-            throw new UnauthorizedException('Missing Authorization header')
+    if (!authHeader)
+      throw new UnauthorizedException('Missing Authorization header')
 
-        const [bearer, token] = authHeader.split(' ')
+    const [bearer, token] = authHeader.split(' ')
 
-        if (bearer !== 'Bearer' || !token)
-            throw new UnauthorizedException('Invalid Authorization header')
+    if (bearer !== 'Bearer' || !token)
+      throw new UnauthorizedException('Invalid Authorization header')
 
-        try {
-            const payload = verifyToken(token, 'access')
-            request.user = payload
-            return true
-        } catch (err: any) {
-            throw new UnauthorizedException('Invalid or expired token', err)
-        }
+    try {
+      const payload = verifyToken(token, 'access')
+      request.user = payload
+      return true
+    } catch (err: any) {
+      throw new UnauthorizedException('Invalid or expired token', err)
     }
+  }
 }

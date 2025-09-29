@@ -7,7 +7,7 @@ import { FilterCommentDTO } from "./dto/filter-comment.dto";
 import { PaginationCommentDTO } from "./dto/pagination-comment.dto";
 
 
-@Controller()
+@Controller('comment')
 export class CommentController {
   constructor(private readonly commentService: CommentService) { }
 

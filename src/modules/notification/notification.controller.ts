@@ -4,7 +4,7 @@ import { NotificationsDTO } from "./dto/notification.dto";
 import { CreateNotificationDTO } from "./dto/create-notification.dto";
 import { FilterNotificationDTO } from "./dto/filter-notification.dto";
 
-@Controller()
+@Controller('notification')
 export class NotificationController {
   constructor(private readonly notificationService: NotificationService) { }
 
