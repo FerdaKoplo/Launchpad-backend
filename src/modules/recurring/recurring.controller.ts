@@ -5,7 +5,7 @@ import { CreateRecurringDTO } from "./dto/create-recurring.dto";
 import { UpdateRecurringDTO } from "./dto/update-recurring.dto";
 import { FilterRecurringDTO } from "./dto/filter-recurring.dto";
 
-@Controller()
+@Controller('recurring')
 export class RecurringController {
   constructor(private readonly recurringService: RecurringService) { }
 

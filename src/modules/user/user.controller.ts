@@ -13,12 +13,14 @@ export class UserController {
   async createProfile(
     @CurrentUser() currentUser: UserPayload,
     @Body() createUserProfile: CreateUserProfileDTO) {
-    return this.userService.createProfile(currentUser.id, createUserProfile)
+    const { avatar, theme } = createUserProfile
+    return this.userService.createProfile(currentUser.id, { avatar, theme })
   }
 
   @Get()
   async getUserProfile(
     currentUser: UserPayload) {
+
     return this.userService.getProfileUser(currentUser.id)
   }
 
@@ -26,8 +28,8 @@ export class UserController {
   async updateProfile(
     @CurrentUser() currentUser: UserPayload,
     @Body() updateUserProfile: UpdateUserProfileDTO) {
-
-    return this.userService.updateProfile(currentUser.id, updateUserProfile)
+    const { avatar, theme } = updateUserProfile
+    return this.userService.updateProfile(currentUser.id, { avatar, theme })
   }
 
   @Delete()

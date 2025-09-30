@@ -18,16 +18,21 @@ import { CommentModule } from './modules/comment/comment.module';
 import { EventModule } from './modules/event/event.module';
 import { RecurringExceptionModule } from './modules/recurring-exception/recurring-exception.module';
 import { AttachmentModule } from './modules/attachment/attachment.module';
+import { ConfigModule } from '@nestjs/config';
+
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: 'env'
+    }),
     PrismaModule, AuthModule,
     UserModule, WorkspaceModule, WorkspaceSettingModule,
     WorkspaceMemberModule, TaskModule, SubTaskModule,
     TagModule, TaskDependencyModule, RecurringModule, NoteModule,
     ActivityLogModule, NotificationModule, CommentModule, EventModule,
     RecurringExceptionModule, AttachmentModule
-
   ],
   providers: [PrismaService],
 })
